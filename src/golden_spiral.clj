@@ -100,10 +100,10 @@
 
         top-left-pos
         (reduce
-         (fn [[x y] r]
-           (if (and (<= (:x r) x) (<= (:y r) y))
-             [(:x r) (:y r)]
-             [x y]))
+         (fn [[x-min y-min] {:keys [x y]}]
+           (if (and (<= x x-min) (<= y y-min))
+             [x y]
+             [x-min y-min]))
          [canvas-width canvas-height]
          rs)
 
