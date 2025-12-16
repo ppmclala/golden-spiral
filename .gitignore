@@ -1,0 +1,7 @@
+ .clj-kondo/
+ .cpcache/
+ .git/
+ .lsp/
+
+ .aider.chat.history.md
+ .nrepl-port
