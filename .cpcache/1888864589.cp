@@ -1,0 +1,1 @@
+test:src:/Users/mattmcmanus/.m2/repository/hiccup/hiccup/2.0.0/hiccup-2.0.0.jar:/Users/mattmcmanus/.m2/repository/org/clojure/clojure/1.12.1/clojure-1.12.1.jar:/Users/mattmcmanus/.m2/repository/org/clojure/core.specs.alpha/0.4.74/core.specs.alpha-0.4.74.jar:/Users/mattmcmanus/.m2/repository/org/clojure/spec.alpha/0.5.238/spec.alpha-0.5.238.jar
