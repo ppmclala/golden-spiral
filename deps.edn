@@ -1,5 +1,6 @@
 {:paths ["src"]
- :deps {hiccup/hiccup        {:mvn/version "2.0.0"}}
+ :deps {hiccup/hiccup        {:mvn/version "2.0.0"}
+        org.mentat/emmy      {:mvn/version "0.32.0"}}
  :aliases
   {:nrepl
    {:extra-deps {nrepl/nrepl {:mvn/version "0.9.0"}}

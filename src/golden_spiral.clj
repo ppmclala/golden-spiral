@@ -6,12 +6,15 @@
 (def factor 10)
 
 (defn fib [n]
-  (if (<= n 1) 1 (+ (fib (- n 2)) (fib (- n 1)))))
+  (case n
+    0 0
+    1 1
+    (+ (fib (- n 2)) (fib (- n 1)))))
 
 (def fast-fib (memoize fib))
 
 (defn fibs [n]
-  (->> (range n) (map fast-fib)))
+  (->> (range 1 (inc n)) (map fast-fib)))
 
 (defn canvas-center []
   [(int (/ canvas-width 2)) (int (/ canvas-height 2))])
@@ -147,3 +150,14 @@
 
     (spit (str "output/golden_spiral-" n ".svg") (html svg-content))
     (println (str "Generated golden_spiral.svg with " n " iterations."))))
+
+(comment
+
+  (fib 0)
+  (fib 1)
+  (fib 2)
+  (fib 3)
+
+  (->> (fibs 4) ->rects)
+
+  )
