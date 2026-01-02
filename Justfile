@@ -9,3 +9,4 @@ repl:
 
 mandelbrot n='2000':
   clj -M -m mandelbrot {{n}}
+

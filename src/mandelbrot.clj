@@ -1,7 +1,10 @@
 (ns mandelbrot
-  (:import [java.awt.image BufferedImage]
-           [javax.imageio ImageIO]
-           [java.io File]))
+  (:require
+   [clojure.core.async :refer [<! >! chan close! go go-loop pipeline]])
+  (:import
+   [java.awt.image BufferedImage]
+   [java.io File]
+   [javax.imageio ImageIO]))
 
 (def max-iterations 1000)
 
@@ -46,6 +49,8 @@
      (scale x* w -2.0 0.5)
      (scale y* h -1.25 1.25))))
 
+(defn pm-set [s])
+
 (defn rgba->png! [w h png-path pixels]
   (let [canvas (BufferedImage. w h BufferedImage/TYPE_INT_ARGB)
         len (* w h)
@@ -68,13 +73,48 @@
    (map ->color)
    (rgba->png! s s (format "output/mset-%d.png" s))))
 
+(defn calculate-pixel [x y n]
+  (let [cx (scale x n -2.0 0.5)
+        cy (scale y n -1.25 1.25)]
+    (-> (calc-escapes cx cy) ->color)))
+
+(defn process-tile! [array image-width tile-indices]
+  (doseq [idx tile-indices]
+    (let [x (rem idx image-width)
+          y (quot idx image-width)
+          color (calculate-pixel x y image-width)]
+      (aset-int array idx color))))
+
+(defn parallel-mset [n]
+  (let [img-array (int-array (* n n))
+        all-indices (range (* n n))
+        tiles (partition-all 10000 all-indices)]
+
+    (doall (pmap #(process-tile! img-array n %) tiles))
+
+    img-array))
+
+(defn pixels->png [sz png-path pixel-array]
+  (let [canvas (BufferedImage. sz sz BufferedImage/TYPE_INT_ARGB)]
+    (.setRGB canvas 0 0 sz sz pixel-array 0 sz)
+    (ImageIO/write canvas "png" (File. png-path))))
+
+(defn parallel-mandelbrot->png [s]
+  (->> (parallel-mset s)
+       (pixels->png s (format "output/mandelbrotp-%d.png" s))))
+
 (defn -main [& args]
-  (let [s (if (first args) (Integer/parseInt (first args)) 100)]
-    (mandelbrot->png s)))
+  (let [s (if (first args)
+            (Integer/parseInt (first args))
+            100)]
+    (if (parallel-mandelbrot->png s)
+      (prn (format "Generated output/mandelbrotp-%d.png" s))
+      (prn "Failed to generated mandelbrot PNG!"))))
 
 (comment
 
-  (mandelbrot->png 2000)
+  (time (mandelbrot->png 1000))
+  (time (parallel-mandelbrot->png 8000))
 
   ;;
   )
